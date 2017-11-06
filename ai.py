@@ -49,9 +49,7 @@ for e in range(epoch):
             action = np.argmax(q[0])
         input_t, reward, game_over, info = env.step(action)
         if isRandom != True:
-            print(reward)
-            print(action)
-            print("---")
+            print("action {}  reward {}".format(action,reward))
         exp_replay.remember([input_prev, action, reward, input_t], game_over)
         batch = exp_replay.get_batch(model, batch_size=batch_size)
         #loss = model.train_on_batch(batch[0], batch[1])

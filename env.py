@@ -64,9 +64,10 @@ class MarketEnv(gym.Env):
                 #use short list data and calculate earn or loss
 
             
-            if _reward < -50:
-                self.reward = -999
-            self.reward = self.reward + _reward
+            if _reward < -200:
+                self.reward = -100
+            else:
+                self.reward = self.reward + _reward
             self.stepNumber = self.stepNumber + 1
             if self.stepNumber >= len(self.StockDataSingleDay.m_data):
                 self.done = True
