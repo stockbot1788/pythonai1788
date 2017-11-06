@@ -52,4 +52,4 @@ for e in range(epoch):
             print("action {}  reward {}".format(action,reward))
         exp_replay.remember([input_prev, action, reward, input_t], game_over)
         batch = exp_replay.get_batch(model, batch_size=batch_size)
-        #loss = model.train_on_batch(batch[0], batch[1])
+        loss = model.train_on_batch(batch[0], batch[1])
