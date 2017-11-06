@@ -7,7 +7,7 @@ class ExperienceReplay(object):
             self.memory = list()
         
     def remember(self, states, game_over):
-        print("rembmer")
+        #print("rembmer")
         #memory[i] = [[state_t, action_t, reward_t, state_t+1], game_over?]
         self.memory.append([states,game_over])
         if len(self.memory) > self.max_memory:
@@ -23,9 +23,11 @@ class ExperienceReplay(object):
         for i, idx in enumerate(np.random.randint(0, len_memory, size=min(len_memory, batch_size))):
             state_t, action_t, reward_t, state_tp1 = self.memory[idx][0]
             game_over = self.memory[idx][1]
-            inputs.append(state_t)
-            targets[i] = model.predict(np.array([state_t]))[0]
-            Q_sa = np.max(model.predict(np.array([state_tp1]))[0])
+            data = state_t.reshape(-1)
+            inputs.append(data)
+            datatp1 = state_tp1.reshape(-1)
+            targets[i] = model.predict(np.array([data]))[0]
+            Q_sa = np.max(model.predict(np.array([datatp1]))[0])
             if game_over :
                 targets[i, action_t] = reward_t
             else:

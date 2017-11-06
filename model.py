@@ -10,7 +10,7 @@ class NerualModel(object):
     def __init__(self):
         print("init model")
 
-    def getModel(self,_path="model.h5"):
+    def getModel(self,_path="modelrnn.h5"):
         model = self.buildModel()
         if _path and path.isfile(_path):
             try:
@@ -23,22 +23,8 @@ class NerualModel(object):
 
     def buildModel(self):
         model = Sequential()
-        model.add(Conv2D(
-            64, (3, 4),
-            input_shape=(1, 10, 4),
-            padding='same',
-        ))
-        model.add(Activation('relu'))
-
-        model.add(MaxPooling2D(
-            pool_size=2,
-            strides=2,
-            padding='same',    # Padding method
-            data_format='channels_first',
-        ))
-
-        model.add(Flatten())
-        model.add(Dense(10))
+        model = Sequential()
+        model.add(Dense(164, input_shape=(40,), kernel_initializer="lecun_uniform"))
         model.add(Activation('relu'))
 
 
@@ -61,7 +47,6 @@ class NerualModel(object):
         # model.add(Activation('relu'))
 
 
-
-        model.add(Dense(5))
-        model.add(Activation('softmax'))
+        model.add(Dense(5, kernel_initializer="lecun_uniform"))
+        model.add(Activation('linear'))
         return model

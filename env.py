@@ -41,7 +41,7 @@ class MarketEnv(gym.Env):
                 else:
                     self.shortlist.append(self.StockDataSingleDay.m_data[self.stepNumber]._high)
             elif self.actions[action] == "IGNORE":
-                _reward = 0    
+                _reward = -5    
             elif self.actions[action] == "SELL_L":
                 #print("sell long")
                 if len(self.longlist) == 0:
@@ -49,8 +49,7 @@ class MarketEnv(gym.Env):
                 else:
                    _reward = int(self.StockDataSingleDay.m_data[self.stepNumber]._high) - int(self.longlist[0])
                    self.longlist = []
-                #check if long list is empty return -1
-                #use long list data and calculate earn or loss
+                   print("minor {}".format(_reward))
             elif self.actions[action] == "SELL_S":
                 #print("sell short")
                 #print(len(self.shortlist))
