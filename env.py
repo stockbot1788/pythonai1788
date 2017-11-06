@@ -107,8 +107,6 @@ class MarketEnv(gym.Env):
                 _all.append(tmp)
             _all = list(reversed(_all))
 
-            #tmpState = _all
-            #tmpState = np.array([_all])
             tmpState = _all
             X = np.array(tmpState)
             X = np.expand_dims(X, axis=0)

@@ -9,7 +9,7 @@ from keras.layers import LSTM, Dropout, Activation, Convolution2D,Convolution1D,
 from keras.optimizers import Adam
 from keras.utils import np_utils
 from expMetrix import ExperienceReplay
-from model import NerualModelsudo apt-get install libhdf5-dev
+from model import NerualModel
 env = MarketEnv("data/20150917.txt")
 
 epoch = 1000000
