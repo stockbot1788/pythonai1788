@@ -51,7 +51,7 @@ class MarketEnv(gym.Env):
             self.stepNumber = self.stepNumber + 1
             if self.stepNumber >= len(self.StockDataSingleDay.m_data):
                 self.done = True
-            if self.reward < -50:
+            if self.reward < -100:
                 self.done = True
             # if self.reward > 200:
             #     self.done = True
