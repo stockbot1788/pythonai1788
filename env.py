@@ -65,7 +65,7 @@ class MarketEnv(gym.Env):
 
             
             if _reward < -200:
-                self.reward = -100
+                self.reward = -200
             else:
                 self.reward = self.reward + _reward
             self.stepNumber = self.stepNumber + 1
@@ -111,6 +111,10 @@ class MarketEnv(gym.Env):
             X = np.array(tmpState)
             X = np.expand_dims(X, axis=0)
             tmpState = X
+
+            tmpState = tmpState.reshape(-1)
+            tmpState = np.concatenate((tmpState,[len(self.longlist)]),axis=0)
+            tmpState = np.concatenate((tmpState,[len(self.shortlist)]),axis=0)
             self.state = tmpState
 
     #self.data containlist of arr

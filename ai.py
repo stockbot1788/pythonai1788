@@ -14,7 +14,7 @@ from keras.optimizers import RMSprop
 env = MarketEnv("data/20150917.txt")
 
 epoch = 1000000
-epsilon = .5
+epsilon = 0.4
 batch_size = 128
 
 Neural = NerualModel()
@@ -44,8 +44,7 @@ for e in range(epoch):
             action = np.random.randint(0, env.action_space.n, size=1)[0]
             isRandom = True
         else:
-            data = input_t.reshape(-1)
-            q = model.predict(np.array([data]))
+            q = model.predict(np.array([input_prev]))
             action = np.argmax(q[0])
         input_t, reward, game_over, info = env.step(action)
         if isRandom != True:
