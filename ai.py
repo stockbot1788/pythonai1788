@@ -14,8 +14,8 @@ from keras.optimizers import RMSprop
 env = MarketEnv("data/20150917.txt")
 
 epoch = 1000000
-epsilon = 0.4
-batch_size = 128
+epsilon = 0.5
+batch_size = 30
 
 Neural = NerualModel()
 model = Neural.getModel()
@@ -26,17 +26,12 @@ model.compile(loss='mse', optimizer=rms)
 exp_replay = ExperienceReplay()
 
 
-input_t = env.reset()
-action = np.random.randint(0, env.action_space.n, size=1)[0]
-print("-----")
-#print(len(input_t.reshape(-1)))
 
-print("-----")
 for e in range(epoch):
     #loss = 0.
     game_over = False
     input_t = env.reset()
-    model.save_weights("modelrnn.h5", overwrite=True)
+    print("run status {}",format(e))
     while not game_over:
         input_prev = input_t
         isRandom = False
@@ -46,9 +41,17 @@ for e in range(epoch):
         else:
             q = model.predict(np.array([input_prev]))
             action = np.argmax(q[0])
+
         input_t, reward, game_over, info = env.step(action)
-        if isRandom != True:
-            print("action {}  reward {}".format(action,reward))
+        #if isRandom != True:
+        #print("action {}  reward {}".format(action,reward))
         exp_replay.remember([input_prev, action, reward, input_t], game_over)
         batch = exp_replay.get_batch(model, batch_size=batch_size)
         loss = model.train_on_batch(batch[0], batch[1])
+        model.save_weights("modelrnn.h5", overwrite=True)
+
+
+# input_t = env.reset()
+# q = model.predict(np.array([input_t]))
+# action = np.argmax(q[0])
+# print("action {}",format(action))
