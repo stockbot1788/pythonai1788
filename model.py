@@ -28,16 +28,16 @@ class NerualModel(object):
         model.add(Activation('relu'))
 
 
-        model.add(Dense(50))
-        model.add(Dropout(0.2))
-        model.add(Activation('relu'))
-
-
         model.add(Dense(100))
         model.add(Dropout(0.2))
         model.add(Activation('relu'))
 
-        model.add(Dense(100))
+
+        model.add(Dense(200))
+        model.add(Dropout(0.2))
+        model.add(Activation('relu'))
+
+        model.add(Dense(300))
         model.add(Dropout(0.2))
         model.add(Activation('relu'))
                      
