@@ -17,9 +17,9 @@ class MarketEnv(gym.Env):
             self.action_space = spaces.Discrete(len(self.actions))
             self.observation_space = spaces.Box(np.ones(10)*-1,np.ones(10))
             self.biggestLost = -25
+            self.superLoss = -50
             self.biggestEarn = 25
             self.superEarn = 50
-            self.superLoss = 50
 
     # self.longlist = []
     # self.shortlist = []
@@ -31,29 +31,84 @@ class MarketEnv(gym.Env):
                  MaxLoss = 999 
                  status = 0
                  for i in range(1,15):
-                     tmpPrice = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
-                     earn = float(tmpPrice) - float(buyPrice)
-                     MaxLoss = min([earn,MaxLoss])
+                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
+                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
+                     earn = float(tmpPriceHigh) - float(buyPrice)
+                     loss = float(tmpPriceLow) - float(buyPrice)
+                     MaxLoss = min([loss,MaxLoss])
                      MaxEarn = max([earn,MaxEarn])
-                     if earn < self.biggestLost and status == 0:
+                     if loss < self.biggestLost and status == 0:
                          status = 1     #loss
                      if earn > self.biggestEarn and status == 0:
                          status = 2     #win      
                  self.reward = -10
                  if status == 2:
                      self.reward = 25
+                     self.cur_reward = self.cur_reward + 25
                      if MaxEarn > self.superEarn:
                          self.reward = 50
+                     if MaxLoss > self.biggestLost:
+                         self.reward = self.reward + 10
                  elif status == 1:
                      self.reward = -25
+                     self.cur_reward = self.cur_reward - 25
                      if MaxLoss < self.superLoss:
                          self.reward = -50
-                 print(self.reward,MaxLoss)
-            elif self.actions[action] == "SHORT":
-                 self.reward = 0
-            elif self.actions[action] == "WEAK":
-                 self.reward = 0                 
 
+            elif self.actions[action] == "SHORT":
+                 buyPrice = self.StockDataSingleDay.m_data[self.stepNumber]._low
+                 MaxEarn = -999
+                 MaxLoss = 999 
+                 status = 0
+                 for i in range(1,15):
+                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
+                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
+                     earn = float(buyPrice) - float(tmpPriceLow)
+                     loss = float(buyPrice) - float(tmpPriceHigh)
+                     MaxLoss = min([loss,MaxLoss])
+                     MaxEarn = max([earn,MaxEarn])
+                     if loss < self.biggestLost and status == 0:
+                         status = 1     #loss
+                     if earn > self.biggestEarn and status == 0:
+                         status = 2     #win      
+                 self.reward = -10
+                 if status == 2:
+                     self.reward = 25
+                     self.cur_reward = self.cur_reward + 25
+                     if MaxEarn > self.superEarn:
+                         self.reward = 50
+                     if MaxLoss > self.biggestLost:
+                         self.reward = self.reward + 10
+                 elif status == 1:
+                     self.reward = -25
+                     self.cur_reward = self.cur_reward - 25
+                     if MaxLoss < self.superLoss:
+                         self.reward = -50
+                 print(MaxLoss)
+            elif self.actions[action] == "WEAK":
+                 buyPriceShort = self.StockDataSingleDay.m_data[self.stepNumber]._low
+                 buyPriceLong = self.StockDataSingleDay.m_data[self.stepNumber]._high
+                 print(buyPriceShort , buyPriceLong)
+                 MaxEarn = -999
+                 MaxLoss = 999 
+                 status = 0
+                 for i in range(1,15):
+                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
+                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
+                     earnShort = float(buyPriceShort) - float(tmpPriceLow)
+                     lossShort = float(buyPriceShort) - float(tmpPriceHigh)
+
+                     earnLong = float(tmpPriceHigh) - float(buyPriceLong)
+                     lossLong = float(tmpPriceLow) - float(buyPriceLong)
+                     print(earnShort,earnLong,tmpPriceHigh,tmpPriceLow,buyPriceShort,buyPriceLong) 
+                     MaxLoss = min([lossLong,lossShort,MaxLoss])
+                     MaxEarn = max([earnLong,earnShort,MaxEarn])
+                 print(MaxLoss,MaxEarn)
+                 self.reward = -50
+                 if MaxLoss > self.biggestLost and MaxEarn < self.biggestEarn :
+                    self.reward = 60
+
+            print(self.reward)
             self.defineState()
             self.stepNumber = self.stepNumber + 1
             if self.stepNumber > len(self.StockDataSingleDay.m_data)-1-15:
@@ -108,7 +163,7 @@ class MarketEnv(gym.Env):
                 if val.find(".txt") != -1:
                     path = "data/"+val
                     datalist.append(path)
-            datalist = datalist[:-6]
+            #datalist = datalist[:-6]
             i = 0
             for val in datalist:
                 self.getSingleData(val)
@@ -130,12 +185,14 @@ class MarketEnv(gym.Env):
                                 CrtDate = dataDate
 
                         code = Stock()
-                        code._open = line.strip().split(",")[1]
-                        code._high = line.strip().split(",")[1]
-                        code._low  = line.strip().split(",")[1]
-                        code._close= line.strip().split(",")[1]
+                        code._open = line.strip().split(",")[1] #open
+                        code._high = line.strip().split(",")[2] #high
+                        code._low  = line.strip().split(",")[3] #low
+                        code._close= line.strip().split(",")[4] #close
+                        
                         StockDataArr[len(StockDataArr)-1].m_data.append(code)
             f.close()
             self.data = self.data + StockDataArr
+            print(len(self.data))
 
             

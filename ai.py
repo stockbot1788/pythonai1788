@@ -18,7 +18,7 @@ epsilon = 0.0
 batch_size = 30
 
 input_t = env.reset()
-env.step(0)
+env.step(1)
 
 # Neural = NerualModel()
 # model = Neural.getModel()
