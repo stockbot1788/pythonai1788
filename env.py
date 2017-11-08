@@ -13,57 +13,57 @@ class MarketEnv(gym.Env):
 	def __init__(self, dir_path):
             self.data = []
             self.getEnvData(dir_path)
-            self.actions = ["LONG","SHORT","SELL_L","SELL_S"]
+            self.actions = ["LONG","SHORT","WEAK"]
             self.action_space = spaces.Discrete(len(self.actions))
             self.observation_space = spaces.Box(np.ones(10)*-1,np.ones(10))
+            self.biggestLost = -25
+            self.biggestEarn = 25
+            self.superEarn = 50
+            self.superLoss = 50
 
     # self.longlist = []
     # self.shortlist = []
 	def _step(self,action):
             self.reward = 0
-            if self.done:
-                return self.state, self.reward, self.done, {}
-
             if self.actions[action] == "LONG":
-                if len(self.longlist) == 1:
-                    self.reward = -300
-                else:
-                    self.longlist.append(self.StockDataSingleDay.m_data[self.stepNumber]._high)
+                 buyPrice = self.StockDataSingleDay.m_data[self.stepNumber]._high
+                 MaxEarn = -999
+                 MaxLoss = 999 
+                 status = 0
+                 for i in range(1,15):
+                     tmpPrice = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
+                     earn = float(tmpPrice) - float(buyPrice)
+                     MaxLoss = min([earn,MaxLoss])
+                     MaxEarn = max([earn,MaxEarn])
+                     if earn < self.biggestLost and status == 0:
+                         status = 1     #loss
+                     if earn > self.biggestEarn and status == 0:
+                         status = 2     #win      
+                 self.reward = -10
+                 if status == 2:
+                     self.reward = 25
+                     if MaxEarn > self.superEarn:
+                         self.reward = 50
+                 elif status == 1:
+                     self.reward = -25
+                     if MaxLoss < self.superLoss:
+                         self.reward = -50
+                 print(self.reward,MaxLoss)
             elif self.actions[action] == "SHORT":
-                if len(self.shortlist) == 1:
-                    self.reward = -300
-                else:
-                    self.shortlist.append(self.StockDataSingleDay.m_data[self.stepNumber]._high)
-            elif self.actions[action] == "SELL_L":
-                if len(self.longlist) == 0:
-                    self.reward = -300
-                else:
-                   self.reward = int(self.StockDataSingleDay.m_data[self.stepNumber]._high) - int(self.longlist[0])
-                   self.longlist = []
-            elif self.actions[action] == "SELL_S":
-                if len(self.shortlist) == 0:
-                    self.reward = -300
-                else:
-                    self.reward = int(self.shortlist[0]) - int(self.StockDataSingleDay.m_data[self.stepNumber]._high)
-                    self.shortlist = []
-            elif self.actions[action] == "IGNORE":
                  self.reward = 0
+            elif self.actions[action] == "WEAK":
+                 self.reward = 0                 
 
             self.defineState()
             self.stepNumber = self.stepNumber + 1
-            if self.stepNumber >= len(self.StockDataSingleDay.m_data):
+            if self.stepNumber > len(self.StockDataSingleDay.m_data)-1-15:
                 self.done = True
-            if self.reward < -100:
-                self.done = True
-            # if self.reward > 200:
-            #     self.done = True
             return self.state, self.reward, self.done, {}
 
 	def _reset(self):
+            self.cur_reward = 0
             self.reward = 0
             self.done = False
-            self.longlist = []
-            self.shortlist = []
             self.stepNumber = 10
             randIdx = int(random() * len(self.data))
             self.StockDataSingleDay = self.data[randIdx]
@@ -97,10 +97,8 @@ class MarketEnv(gym.Env):
             tmpState = tmpState.astype(np.float)
             tmpState = [np.float(i)/max(tmpState) for i in tmpState]
        
-            tmpState = np.concatenate((tmpState,[len(self.longlist)]),axis=0)
-            tmpState = np.concatenate((tmpState,[len(self.shortlist)]),axis=0)
-            #tmpState = [len(self.longlist),len(self.shortlist)]
-            #print("data {}",format(tmpState))
+            #tmpState = np.concatenate((tmpState,[len(self.longlist)]),axis=0)
+            #tmpState = np.concatenate((tmpState,[len(self.shortlist)]),axis=0)
             self.state = tmpState
 
 	def getEnvData(self,path):
@@ -139,6 +137,5 @@ class MarketEnv(gym.Env):
                         StockDataArr[len(StockDataArr)-1].m_data.append(code)
             f.close()
             self.data = self.data + StockDataArr
-            for stockDaily in self.data:
-                print(stockDaily.m_date)
+
             
