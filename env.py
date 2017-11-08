@@ -7,9 +7,11 @@ import codecs
 from random import random
 import numpy as np
 import math
+import os
 
 class MarketEnv(gym.Env):
 	def __init__(self, dir_path):
+            self.data = []
             self.getEnvData(dir_path)
             self.actions = ["LONG","SHORT","SELL_L","SELL_S"]
             self.action_space = spaces.Discrete(len(self.actions))
@@ -101,9 +103,20 @@ class MarketEnv(gym.Env):
             #print("data {}",format(tmpState))
             self.state = tmpState
 
-    #self.data containlist of arr
 	def getEnvData(self,path):
-            f = codecs.open("data/20150917.txt", "r", "utf-8")
+            filelist = os.listdir(path)
+            datalist = []
+            for val in filelist:
+                if val.find(".txt") != -1:
+                    path = "data/"+val
+                    datalist.append(path)
+            datalist = datalist[:-6]
+            i = 0
+            for val in datalist:
+                self.getSingleData(val)
+
+	def getSingleData(self,path):
+            f = codecs.open(path, "r", "utf-8")
             StockDataArr = []
             CrtDate = ""                
             for line in f:
@@ -125,4 +138,7 @@ class MarketEnv(gym.Env):
                         code._close= line.strip().split(",")[1]
                         StockDataArr[len(StockDataArr)-1].m_data.append(code)
             f.close()
-            self.data = StockDataArr
+            self.data = self.data + StockDataArr
+            for stockDaily in self.data:
+                print(stockDaily.m_date)
+            
