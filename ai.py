@@ -14,7 +14,7 @@ from keras.optimizers import RMSprop
 env = MarketEnv("data/20150917.txt")
 
 epoch = 1000000
-epsilon = 0.5
+epsilon = 0.0
 batch_size = 30
 
 Neural = NerualModel()
@@ -44,11 +44,11 @@ for e in range(epoch):
 
         input_t, reward, game_over, info = env.step(action)
         #if isRandom != True:
-        #print("action {}  reward {}".format(action,reward))
-        exp_replay.remember([input_prev, action, reward, input_t], game_over)
-        batch = exp_replay.get_batch(model, batch_size=batch_size)
-        loss = model.train_on_batch(batch[0], batch[1])
-        model.save_weights("modelrnn.h5", overwrite=True)
+        print("action {}  reward {}".format(action,reward))
+        # exp_replay.remember([input_prev, action, reward, input_t], game_over)
+        # batch = exp_replay.get_batch(model, batch_size=batch_size)
+        # loss = model.train_on_batch(batch[0], batch[1])
+        # model.save_weights("modelrnn.h5", overwrite=True)
 
 
 # input_t = env.reset()

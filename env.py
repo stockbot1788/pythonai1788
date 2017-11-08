@@ -11,7 +11,7 @@ import math
 class MarketEnv(gym.Env):
 	def __init__(self, dir_path):
             self.getEnvData(dir_path)
-            self.actions = ["LONG","SHORT","SELL_L","SELL_S","IGNORE"]
+            self.actions = ["LONG","SHORT","SELL_L","SELL_S"]
             self.action_space = spaces.Discrete(len(self.actions))
             self.observation_space = spaces.Box(np.ones(10)*-1,np.ones(10))
 
