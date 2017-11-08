@@ -37,10 +37,13 @@ class NerualModel(object):
         model.add(Dropout(0.2))
         model.add(Activation('relu'))
 
-        model.add(Dense(300))
+        model.add(Dense(500))
         model.add(Dropout(0.2))
         model.add(Activation('relu'))
-                     
+
+        model.add(Dense(1000))
+        model.add(Dropout(0.2))
+        model.add(Activation('relu'))                     
 
         # model.add(Dense(2000))
         # model.add(Dropout(0.2))
@@ -52,6 +55,6 @@ class NerualModel(object):
         # model.add(Activation('relu'))
 
 
-        model.add(Dense(4, kernel_initializer="lecun_uniform"))
+        model.add(Dense(3, kernel_initializer="lecun_uniform"))
         model.add(Activation('linear'))
         return model

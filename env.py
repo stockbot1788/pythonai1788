@@ -84,11 +84,9 @@ class MarketEnv(gym.Env):
                      self.cur_reward = self.cur_reward - 25
                      if MaxLoss < self.superLoss:
                          self.reward = -50
-                 print(MaxLoss)
             elif self.actions[action] == "WEAK":
                  buyPriceShort = self.StockDataSingleDay.m_data[self.stepNumber]._low
                  buyPriceLong = self.StockDataSingleDay.m_data[self.stepNumber]._high
-                 print(buyPriceShort , buyPriceLong)
                  MaxEarn = -999
                  MaxLoss = 999 
                  status = 0
@@ -100,15 +98,12 @@ class MarketEnv(gym.Env):
 
                      earnLong = float(tmpPriceHigh) - float(buyPriceLong)
                      lossLong = float(tmpPriceLow) - float(buyPriceLong)
-                     print(earnShort,earnLong,tmpPriceHigh,tmpPriceLow,buyPriceShort,buyPriceLong) 
                      MaxLoss = min([lossLong,lossShort,MaxLoss])
                      MaxEarn = max([earnLong,earnShort,MaxEarn])
-                 print(MaxLoss,MaxEarn)
                  self.reward = -50
                  if MaxLoss > self.biggestLost and MaxEarn < self.biggestEarn :
                     self.reward = 60
 
-            print(self.reward)
             self.defineState()
             self.stepNumber = self.stepNumber + 1
             if self.stepNumber > len(self.StockDataSingleDay.m_data)-1-15:
@@ -142,18 +137,27 @@ class MarketEnv(gym.Env):
                 _all.append(tmp)
             _all = list(reversed(_all))
 
+            Max = -99999999999
+            Min = 999999999999
+            for i in range(0,self.stepNumber):
+                h = self.StockDataSingleDay.m_data[i]._high
+                l = self.StockDataSingleDay.m_data[i]._low
+                h = float(h)
+                l = float(l)
+                Max = max([h,Max])
+                Min = min([l,Min])
+
             tmpState = _all
-            #print(tmpState)
             X = np.array(tmpState)
             X = np.expand_dims(X, axis=0)
             tmpState = X
             tmpState = tmpState.reshape(-1)
-            #norm = [np.float(i)/max(tmpState) for i in tmpState]
             tmpState = tmpState.astype(np.float)
-            tmpState = [np.float(i)/max(tmpState) for i in tmpState]
-       
-            #tmpState = np.concatenate((tmpState,[len(self.longlist)]),axis=0)
-            #tmpState = np.concatenate((tmpState,[len(self.shortlist)]),axis=0)
+            #do normalization
+            tmpState = [Max-np.float(i) for i in tmpState]
+            tmpState.append(float(Max-Min))
+            tmpState = [float(i)/max(tmpState) for i in tmpState]
+            tmpState.append(self.stepNumber/len(self.StockDataSingleDay.m_data))
             self.state = tmpState
 
 	def getEnvData(self,path):
@@ -193,6 +197,5 @@ class MarketEnv(gym.Env):
                         StockDataArr[len(StockDataArr)-1].m_data.append(code)
             f.close()
             self.data = self.data + StockDataArr
-            print(len(self.data))
 
             
