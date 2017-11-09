@@ -142,8 +142,8 @@ class MarketEnv(gym.Env):
             for i in range(0,self.stepNumber):
                 h = self.StockDataSingleDay.m_data[i]._high
                 l = self.StockDataSingleDay.m_data[i]._low
-                h = float(h)
-                l = float(l)
+                h = np.float(h)
+                l = np.float(l)
                 Max = max([h,Max])
                 Min = min([l,Min])
 
@@ -156,7 +156,7 @@ class MarketEnv(gym.Env):
             #do normalization
             tmpState = [Max-np.float(i) for i in tmpState]
             tmpState.append(float(Max-Min))
-            tmpState = [float(i)/max(tmpState) for i in tmpState]
+            #tmpState = [float(i)/max(tmpState) for i in tmpState]
             tmpState.append(self.stepNumber/len(self.StockDataSingleDay.m_data))
             self.state = tmpState
 

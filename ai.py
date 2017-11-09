@@ -37,6 +37,7 @@ for e in range(epoch):
     print("run status {}",format(e))
     while not game_over:
         input_prev = input_t
+        #print(input_prev)
         isRandom = False
         if np.random.rand() <= epsilon:
             action = np.random.randint(0, env.action_space.n, size=1)[0]

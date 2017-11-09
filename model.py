@@ -35,26 +35,15 @@ class NerualModel(object):
     def buildModel(self):
         model = Sequential()
         model = Sequential()
-        model.add(Dense(100, input_shape=(42,), kernel_initializer="lecun_uniform"))
+        model.add(Dense(70, input_shape=(42,), kernel_initializer="lecun_uniform"))
+        model.add(Activation('relu'))
+        
+        model.add(Dense(28))
         model.add(Activation('relu'))
 
 
-        model.add(Dense(100))
-        model.add(Dropout(0.2))
+        model.add(Dense(12))
         model.add(Activation('relu'))
-
-
-        model.add(Dense(200))
-        model.add(Dropout(0.2))
-        model.add(Activation('relu'))
-
-        model.add(Dense(500))
-        model.add(Dropout(0.2))
-        model.add(Activation('relu'))
-
-        model.add(Dense(1000))
-        model.add(Dropout(0.2))
-        model.add(Activation('relu'))                     
 
         # model.add(Dense(2000))
         # model.add(Dropout(0.2))
