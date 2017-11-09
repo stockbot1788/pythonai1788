@@ -4,7 +4,40 @@ import numpy as np
 from env import MarketEnv
 
 env = MarketEnv("data")
+import tensorflow as tf
+import keras
+from keras.utils import np_utils
 
+from keras.layers import Dense, Conv2D, Flatten, Input
+from keras.models import Model
+from keras.optimizers import RMSprop
+
+
+print("preparing model")
+input_layer = Input(shape=(42, ))
+fc = Dense(32, activation='relu')(input_layer)
+fc = Dense(16, activation='relu')(fc)
+fc = Dense(8, activation='relu')(fc)
+pred = Dense(3, name='pred', activation='softmax')(fc)
+model = Model(inputs=[input_layer], outputs=[pred], name='fc')
+
+rmsprop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+model.compile(optimizer=rmsprop,
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+model.summary()
+
+_path = "model2.h5"
+if _path and path.isfile(_path):
+    try:
+       print("try load weight")
+       model.load_weights(_path)
+       print("load weight success")
+    except Exception as ex:
+       print("error",ex)
+       sys.exit("Error message")
+
+print("preparing data")
 inputX = []
 outputY = []
 for data in env.data:
@@ -42,21 +75,62 @@ for data in env.data:
         LongPrice = data.m_data[i]._high
         LongPrice = np.float(LongPrice)
         ShortPrice = data.m_data[i]._low
+        ShortPrice = np.float(ShortPrice)
         MaxEarn = -99999
         MaxLoss = 99999
+        status = 0
+        isLong = 0
         for j in range(1,15):
             tmpPriceHigh = data.m_data[i+j]._high
             tmpPriceHigh = np.float(tmpPriceHigh)
+
             tmpPriceLow = data.m_data[i+j]._low
             tmpPriceLow = np.float(tmpPriceLow)
             
-            earnShort = ShortPrice - tmpPriceLow
-            lossShort = ShortPrice - tmpPriceHigh
-
             earnLong = tmpPriceHigh - LongPrice
             lossLong = tmpPriceLow - LongPrice
+            if lossLong <-25 and status == 0:
+                status = 1  #long fail
+                break
+            elif earnLong >25 and status == 0:
+                status = 2  #long win
+                break
+        if status != 2:
+            status = 0
+            for j in range(1,15):
+                tmpPriceHigh = data.m_data[i+j]._high
+                tmpPriceHigh = np.float(tmpPriceHigh)
 
-            MaxLoss = min([lossLong,lossShort,MaxLoss])
-            MaxEarn = max([earnLong,earnShort,MaxEarn])
+                tmpPriceLow = data.m_data[i+j]._low
+                tmpPriceLow = np.float(tmpPriceLow)
 
-        
+                earnShort = ShortPrice - tmpPriceLow
+                lossShort = ShortPrice - tmpPriceHigh
+                if lossShort <-25 and status == 0:
+                    status = 1
+                    break
+                elif earnShort >25 and status == 0:
+                    status = 3
+                    break
+        if status !=2 and status !=3:
+            status = 1
+        if status == 1:
+            status = [1,0,0]
+        elif status == 2 :
+            status = [0,1,0]
+        elif status == 3 :
+            status = [0,0,1]
+        outputY.append(status)
+
+
+print("prepare data complete")
+print("---")
+#outputY = np_utils.to_categorical(outputY, num_classes=3)
+for step in range(10001):
+    cost = model.train_on_batch(inputX, outputY)
+    if step % 100 == 0:
+        print('train cost: ', cost)
+        model.save_weights("model2.h5")
+        model.save_weights("model2_bk.h5")
+
+    
