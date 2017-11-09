@@ -11,6 +11,7 @@ from keras.utils import np_utils
 from expMetrix import ExperienceReplay
 from model import NerualModel
 from keras.optimizers import RMSprop
+from keras.models import model_from_json
 
 
 env = MarketEnv("data")
@@ -50,7 +51,11 @@ for e in range(epoch):
         exp_replay.remember([input_prev, action, reward, input_t], game_over)
         batch = exp_replay.get_batch(model, batch_size=batch_size)
         loss = model.train_on_batch(batch[0], batch[1])
-        model.save_weights("modelrnn.h5", overwrite=True)
+        model_json = model.to_json()
+        with open("model.json", "w") as json_file:
+            json_file.write(model_json)
+        model.save_weights("model.h5")
+        model.save_weights("model_bk.h5")
 
 
 # input_t = env.reset()
