@@ -11,7 +11,7 @@ from keras.utils import np_utils
 from keras.layers import Dense, Conv2D, Flatten, Input
 from keras.models import Model
 from keras.optimizers import RMSprop
-
+from os import path
 
 print("preparing model")
 input_layer = Input(shape=(42, ))
