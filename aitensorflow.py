@@ -50,7 +50,7 @@ for data in env.data:
             _o = data.m_data[j]._open
             tmp = [_h,_l,_c,_o]
             _all.append(tmp)
-        _all = list(reversed(_all))
+        #_all = list(reversed(_all))
 
         Max = -99999999999
         Min = 999999999999
