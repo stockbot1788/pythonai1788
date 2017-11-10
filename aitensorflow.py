@@ -132,7 +132,7 @@ outputY = np_utils.to_categorical(outputY, 3)
 inputX = np.array(inputX)
 #print(np.array(inputX).shape)
 
-for i in range(20):
+for i in range(200):
     model.fit(inputX, outputY, batch_size=5000, epochs=100, verbose=1)
     model.save_weights("model2.h5")
     model.save_weights("model2_bk.h5")
