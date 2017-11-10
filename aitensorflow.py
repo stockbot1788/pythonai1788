@@ -14,14 +14,15 @@ from keras.optimizers import RMSprop
 from os import path
 
 print("preparing model")
-input_layer = Input(shape=(42, ))
-fc = Dense(32, activation='relu')(input_layer)
-fc = Dense(16, activation='relu')(fc)
-fc = Dense(8, activation='relu')(fc)
-pred = Dense(3, name='pred', activation='softmax')(fc)
+input_layer = Input(shape=(4, 10, 1))
+cnn1 = Conv2D(10, kernel_size=(1,5), strides=(1,1), activation='relu')(input_layer)
+cnn2 = Conv2D(20, kernel_size=(1,2), strides=(1,1), activation='relu')(cnn1)
+flat = Flatten()(cnn2)
+fc1 = Dense(56, activation='relu')(flat)
+pred = Dense(3, name='pred', activation='softmax')(fc1)
 model = Model(inputs=[input_layer], outputs=[pred], name='fc')
 
-rmsprop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+rmsprop = RMSprop(lr=0.005, rho=0.9, epsilon=1e-05, decay=0.0)
 model.compile(optimizer=rmsprop,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -66,11 +67,12 @@ for data in env.data:
         X = X.reshape(-1)
         X = X.astype(np.float)
         X = [Max-np.float(i) for i in X]
-        X.append(Max-Min)
         X = [100*i/max(X) for i in X]
-        X.append(i)
+        dif = Max-Min
+        X =  np.array(X)
+        X = np.reshape(X, (4, 10,1))
         inputX.append(X)
-
+        #print(X)
         #work for Y value 
         LongPrice = data.m_data[i]._high
         LongPrice = np.float(LongPrice)
@@ -114,23 +116,32 @@ for data in env.data:
                     break
         if status !=2 and status !=3:
             status = 1
-        if status == 1:
-            status = [1,0,0]
-        elif status == 2 :
-            status = [0,1,0]
-        elif status == 3 :
-            status = [0,0,1]
+        status = status - 1
+        # if status == 1:
+        #     status = [1,0,0]
+        # elif status == 2 :
+        #     status = [0,1,0]
+        # elif status == 3 :
+        #     status = [0,0,1]
         outputY.append(status)
 
 
-print("prepare data complete")
-print("---")
-#outputY = np_utils.to_categorical(outputY, num_classes=3)
-for step in range(10001):
-    cost = model.train_on_batch(inputX, outputY)
-    if step % 100 == 0:
-        print('train cost: ', cost)
-        model.save_weights("model2.h5")
-        model.save_weights("model2_bk.h5")
+# print("prepare data complete")
+# print("---")
+outputY = np_utils.to_categorical(outputY, 3)
+inputX = np.array(inputX)
+#print(np.array(inputX).shape)
+
+model.fit(inputX, outputY, 
+          batch_size=5000, epochs=100, verbose=1)
+
+# model.save_weights("model2.h5")
+# model.save_weights("model2_bk.h5")
+# for step in range(10001):
+#     cost = model.train_on_batch(inputX, outputY)
+#     if step % 100 == 0:
+#         print('train cost: ', cost)
+#         model.save_weights("model2.h5")
+#         model.save_weights("model2_bk.h5")
 
     

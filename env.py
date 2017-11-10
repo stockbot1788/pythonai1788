@@ -167,7 +167,7 @@ class MarketEnv(gym.Env):
                 if val.find(".txt") != -1:
                     path = "data/"+val
                     datalist.append(path)
-            datalist = datalist[:-6]
+            #datalist = datalist[:-6]
             i = 0
             for val in datalist:
                 self.getSingleData(val)
