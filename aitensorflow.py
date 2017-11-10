@@ -15,14 +15,14 @@ from os import path
 
 print("preparing model")
 input_layer = Input(shape=(4, 10, 1))
-cnn1 = Conv2D(10, kernel_size=(1,5), strides=(1,1), activation='relu')(input_layer)
+cnn1 = Conv2D(10, kernel_size=(1,8), strides=(1,1), activation='relu')(input_layer)
 cnn2 = Conv2D(20, kernel_size=(1,2), strides=(1,1), activation='relu')(cnn1)
 flat = Flatten()(cnn2)
 fc1 = Dense(56, activation='relu')(flat)
 pred = Dense(3, name='pred', activation='softmax')(fc1)
 model = Model(inputs=[input_layer], outputs=[pred], name='fc')
 
-rmsprop = RMSprop(lr=0.005, rho=0.9, epsilon=1e-05, decay=0.0)
+rmsprop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 model.compile(optimizer=rmsprop,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -135,8 +135,8 @@ inputX = np.array(inputX)
 model.fit(inputX, outputY, 
           batch_size=5000, epochs=100, verbose=1)
 
-# model.save_weights("model2.h5")
-# model.save_weights("model2_bk.h5")
+model.save_weights("model2.h5")
+model.save_weights("model2_bk.h5")
 # for step in range(10001):
 #     cost = model.train_on_batch(inputX, outputY)
 #     if step % 100 == 0:
