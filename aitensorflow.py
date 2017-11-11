@@ -66,7 +66,7 @@ outputY = np_utils.to_categorical(outputY, 3)
 
 #model.fit(np.array(inputX), outputY, batch_size=5000, epochs=100, verbose=1)
 for i in range(200):
-    model.fit(inputX, outputY, batch_size=5000, epochs=100, verbose=1)
+    model.fit(np.array(inputX), outputY, batch_size=5000, epochs=100, verbose=1)
     model.save_weights("model233.h5")
     model.save_weights("model233_bk.h5")
 
