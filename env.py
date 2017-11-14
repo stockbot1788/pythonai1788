@@ -25,84 +25,13 @@ class MarketEnv(gym.Env):
     # self.shortlist = []
 	def _step(self,action):
             self.reward = 0
+            buyPrice = self.StockDataSingleDay.m_data[self.stepNumber]._high
             if self.actions[action] == "LONG":
-                 buyPrice = self.StockDataSingleDay.m_data[self.stepNumber]._high
-                 MaxEarn = -999
-                 MaxLoss = 999 
-                 status = 0
-                 for i in range(1,15):
-                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
-                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
-                     earn = float(tmpPriceHigh) - float(buyPrice)
-                     loss = float(tmpPriceLow) - float(buyPrice)
-                     MaxLoss = min([loss,MaxLoss])
-                     MaxEarn = max([earn,MaxEarn])
-                     if loss < self.biggestLost and status == 0:
-                         status = 1     #loss
-                     if earn > self.biggestEarn and status == 0:
-                         status = 2     #win      
-                 self.reward = -10
-                 if status == 2:
-                     self.reward = 25
-                     self.cur_reward = self.cur_reward + 25
-                     if MaxEarn > self.superEarn:
-                         self.reward = 50
-                     if MaxLoss > self.biggestLost:
-                         self.reward = self.reward + 10
-                 elif status == 1:
-                     self.reward = -25
-                     self.cur_reward = self.cur_reward - 25
-                     if MaxLoss < self.superLoss:
-                         self.reward = -50
-
+               print("long")
             elif self.actions[action] == "SHORT":
-                 buyPrice = self.StockDataSingleDay.m_data[self.stepNumber]._low
-                 MaxEarn = -999
-                 MaxLoss = 999 
-                 status = 0
-                 for i in range(1,15):
-                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
-                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
-                     earn = float(buyPrice) - float(tmpPriceLow)
-                     loss = float(buyPrice) - float(tmpPriceHigh)
-                     MaxLoss = min([loss,MaxLoss])
-                     MaxEarn = max([earn,MaxEarn])
-                     if loss < self.biggestLost and status == 0:
-                         status = 1     #loss
-                     if earn > self.biggestEarn and status == 0:
-                         status = 2     #win      
-                 self.reward = -10
-                 if status == 2:
-                     self.reward = 25
-                     self.cur_reward = self.cur_reward + 25
-                     if MaxEarn > self.superEarn:
-                         self.reward = 50
-                     if MaxLoss > self.biggestLost:
-                         self.reward = self.reward + 10
-                 elif status == 1:
-                     self.reward = -25
-                     self.cur_reward = self.cur_reward - 25
-                     if MaxLoss < self.superLoss:
-                         self.reward = -50
+               print("short")
             elif self.actions[action] == "WEAK":
-                 buyPriceShort = self.StockDataSingleDay.m_data[self.stepNumber]._low
-                 buyPriceLong = self.StockDataSingleDay.m_data[self.stepNumber]._high
-                 MaxEarn = -999
-                 MaxLoss = 999 
-                 status = 0
-                 for i in range(1,15):
-                     tmpPriceHigh = self.StockDataSingleDay.m_data[self.stepNumber+i]._high
-                     tmpPriceLow = self.StockDataSingleDay.m_data[self.stepNumber+i]._low
-                     earnShort = float(buyPriceShort) - float(tmpPriceLow)
-                     lossShort = float(buyPriceShort) - float(tmpPriceHigh)
-
-                     earnLong = float(tmpPriceHigh) - float(buyPriceLong)
-                     lossLong = float(tmpPriceLow) - float(buyPriceLong)
-                     MaxLoss = min([lossLong,lossShort,MaxLoss])
-                     MaxEarn = max([earnLong,earnShort,MaxEarn])
-                 self.reward = -50
-                 if MaxLoss > self.biggestLost and MaxEarn < self.biggestEarn :
-                    self.reward = 60
+               print("weak")
 
             self.defineState()
             self.stepNumber = self.stepNumber + 1
