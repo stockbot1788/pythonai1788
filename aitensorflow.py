@@ -93,7 +93,7 @@ outputY = np_utils.to_categorical(outputY, 3)
 #[0,0,1] short earn 
 
 #print(inputX.shape)
-model.fit(inputX, outputY, batch_size=5000, epochs=100, verbose=1)
+model.fit(inputX, outputY, batch_size=50, epochs=100, verbose=1)
 
 
 # for i in range(200):
