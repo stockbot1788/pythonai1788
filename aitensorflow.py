@@ -48,7 +48,8 @@ output2 = Dense(1, activation='sigmoid')(output)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-model.compile(loss='mean_squared_error', optimizer='adam')
+sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='mean_squared_error', optimizer=sgd)
 print(model.summary())
 
 print("preparing data")
