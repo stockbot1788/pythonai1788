@@ -16,6 +16,7 @@ from numpy import array
 import sys
 from keras.optimizers import RMSprop
 from keras.layers import Input
+from os import path
 print("preparing model")
 
 
@@ -64,12 +65,35 @@ Position = array(Position)
 outputY = array(outputY)
 
 
+_path = "lstm.h5"
+if _path and path.isfile(_path):
+    try:
+        print("try load weight")
+        model.load_weights(_path)
+        print("load weight success")
+    except Exception as ex:
+        print("error",ex)
+        sys.exit("Error message")
+
+print("predicting")
+dataA = model.predict([inputX,inputXStr,inputX2,inputX2Str,Position])
+guess = 0
+guess1 = 0
+for i in range(0,len(dataA)):
+    print(dataA[i][0])
+    if dataA[i][0] > 0.8 and outputY[i]==1:
+        print(dataA[i][0])
+        guess = guess + 1
+    if dataA[i][0] > 0.8:
+        guess1 = guess1 + 1
+
+print(guess)
+print(guess1)
+print("complete")
+
 #print(inputX.shape)
-# for step in range(30):
-#     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
-#     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=50, epochs=100, verbose=1)
-model.save_weights("lstm.h5")
+#model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=50, epochs=100, verbose=1)
+#model.save_weights("lstm.h5")
 
 # for i in range(200):
 #     model.fit(np.array(inputX), outputY, batch_size=5000, epochs=100, verbose=1)
