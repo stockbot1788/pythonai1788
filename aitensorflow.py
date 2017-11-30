@@ -16,6 +16,7 @@ from numpy import array
 import sys
 from keras.optimizers import RMSprop
 from keras.layers import Input
+from keras import optimizers
 print("preparing model")
 
 
@@ -49,7 +50,7 @@ model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
 sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='mean_squared_error', optimizer=sgd)
+model.compile(loss='mean_squared_error',  optimizer='adam')
 print(model.summary())
 
 print("preparing data")
@@ -69,7 +70,7 @@ outputY = array(outputY)
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=50, epochs=100, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=100, epochs=100, verbose=1)
 model.save_weights("lstm.h5")
 
 # for i in range(200):
