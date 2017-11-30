@@ -50,7 +50,7 @@ output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = optimizers.SGD(lr=0.9, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='mean_squared_error',  optimizer='adam')
 print(model.summary())
 
@@ -71,7 +71,7 @@ outputY = array(outputY)
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=100, epochs=300, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=300, verbose=1)
 model.save_weights("lstm2.h5")
 
 # for i in range(200):
