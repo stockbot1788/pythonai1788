@@ -81,10 +81,10 @@ guess = 0
 guess1 = 0
 for i in range(0,len(dataA)):
     print(dataA[i][0])
-    if dataA[i][0] > 0.8 and outputY[i]==1:
+    if dataA[i][0] > 0.6 and outputY[i]==1:
         print(dataA[i][0])
         guess = guess + 1
-    if dataA[i][0] > 0.8:
+    if dataA[i][0] > 0.6:
         guess1 = guess1 + 1
 
 print(guess)
