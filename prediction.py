@@ -17,39 +17,42 @@ import sys
 from keras.optimizers import RMSprop
 from keras.layers import Input
 from os import path
+from keras import optimizers
 print("preparing model")
 
 
 ls1Ip = Input(shape=(15,5))
-ls11 = LSTM(5)(ls1Ip)
-ls12 = Dense(2, activation='tanh')(ls11)
+ls11 = LSTM(25)(ls1Ip)
+ls12 = Dense(5, activation='tanh')(ls11)
 
 ls1IpR = Input(shape=(2,))
-ls1IpR2 = Dense(2, activation='tanh')(ls1IpR)
+ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
 
 M1 = concatenate([ls12, ls1IpR2])
 
 
 ls2Ip2 = Input(shape=(15,4))
-ls21 = LSTM(5)(ls2Ip2)
-ls22 = Dense(2, activation='tanh')(ls21)
+ls21 = LSTM(25)(ls2Ip2)
+ls22 = Dense(5, activation='tanh')(ls21)
 
 ls2IpR = Input(shape=(2,))
-ls2IpR2 = Dense(2, activation='tanh')(ls2IpR)
+ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
 
 M2 = concatenate([ls22, ls2IpR2])
 
 ls3Ip3 = Input(shape=(1,))
-ls31 = Dense(2, activation='tanh')(ls3Ip3)
+ls31 = Dense(5, activation='tanh')(ls3Ip3)
 
 merge_one = concatenate([M1, M2, ls31])
 
-output = Dense(5, activation='tanh')(merge_one)
-output2 = Dense(1, activation='sigmoid')(output)
+output = Dense(10, activation='tanh')(merge_one)
+output1 = Dense(5, activation='tanh')(output)
+output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-model.compile(loss='mean_squared_error', optimizer='adam')
+sgd = optimizers.SGD(lr=0.9, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='mean_squared_error',  optimizer='adam')
 print(model.summary())
 
 print("preparing data")
@@ -65,7 +68,7 @@ Position = array(Position)
 outputY = array(outputY)
 
 
-_path = "lstm.h5"
+_path = "lstm2.h5"
 if _path and path.isfile(_path):
     try:
         print("try load weight")
@@ -81,10 +84,10 @@ guess = 0
 guess1 = 0
 for i in range(0,len(dataA)):
     print(dataA[i][0])
-    if dataA[i][0] > 0.6 and outputY[i]==1:
+    if dataA[i][0] > 0.7 and outputY[i]==1:
         print(dataA[i][0])
         guess = guess + 1
-    if dataA[i][0] > 0.6:
+    if dataA[i][0] > 0.7:
         guess1 = guess1 + 1
 
 print(guess)
