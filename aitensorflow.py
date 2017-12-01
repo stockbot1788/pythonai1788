@@ -56,8 +56,8 @@ output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-sgd = optimizers.SGD(lr=0.00001)
-model.compile(loss='mean_squared_error',  optimizer=sgd)
+sgd = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+model.compile(loss='binary_crossentropy',  optimizer=sgd)
 print(model.summary())
 
 print("preparing data")
@@ -72,15 +72,15 @@ inputX2Str = array(inputX2Str)
 Position = array(Position)
 outputY = array(outputY)
 
-_path = "lstm.h5"
-if _path and path.isfile(_path):
-    try:
-        print("try load weight")
-        model.load_weights(_path)
-        print("load weight success")
-    except Exception as ex:
-        print("error",ex)
-        sys.exit("Error message")
+# _path = "lstm.h5"
+# if _path and path.isfile(_path):
+#     try:
+#         print("try load weight")
+#         model.load_weights(_path)
+#         print("load weight success")
+#     except Exception as ex:
+#         print("error",ex)
+#         sys.exit("Error message")
 
 #print(inputX.shape)
 # for step in range(30):
