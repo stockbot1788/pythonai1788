@@ -68,7 +68,7 @@ Position = array(Position)
 outputY = array(outputY)
 
 
-_path = "lstm2.h5"
+_path = "lstm.h5"
 if _path and path.isfile(_path):
     try:
         print("try load weight")

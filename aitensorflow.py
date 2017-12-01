@@ -22,24 +22,26 @@ print("preparing model")
 
 ls1Ip = Input(shape=(15,5))
 ls11 = LSTM(25)(ls1Ip)
-ls11d = Dropout(.2)(ls11)
-ls12 = Dense(5, activation='tanh')(ls11d)
+ls11d = Dropout(.3)(ls11)
+ls12 = Dense(10, activation='tanh')(ls11d)
+ls13 = Dense(5, activation='tanh')(ls12)
 
 ls1IpR = Input(shape=(2,))
 ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
 
-M1 = concatenate([ls12, ls1IpR2])
+M1 = concatenate([ls13, ls1IpR2])
 
 
 ls2Ip2 = Input(shape=(15,4))
 ls21 = LSTM(25)(ls2Ip2)
-ls21d = Dropout(.2)(ls21)
-ls22 = Dense(5, activation='tanh')(ls21d)
+ls21d = Dropout(.3)(ls21)
+ls22 = Dense(10, activation='tanh')(ls21d)
+ls23 = Dense(5, activation='tanh')(ls22)
 
 ls2IpR = Input(shape=(2,))
 ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
 
-M2 = concatenate([ls22, ls2IpR2])
+M2 = concatenate([ls23, ls2IpR2])
 
 ls3Ip3 = Input(shape=(1,))
 ls31 = Dense(5, activation='tanh')(ls3Ip3)
@@ -47,14 +49,14 @@ ls31 = Dense(5, activation='tanh')(ls3Ip3)
 merge_one = concatenate([M1, M2, ls31])
 
 output = Dense(10, activation='tanh')(merge_one)
-outputd = Dropout(.2)(output)
+outputd = Dropout(.3)(output)
 output1 = Dense(5, activation='tanh')(outputd)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-sgd = optimizers.SGD(lr=0.9, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='mean_squared_error',  optimizer='adam')
+sgd = optimizers.SGD(lr=0.000001, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='mean_squared_error',  optimizer=sgd)
 print(model.summary())
 
 print("preparing data")
