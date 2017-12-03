@@ -86,7 +86,7 @@ if _path and path.isfile(_path):
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=300, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
 model.save_weights("lstm.h5")
 
 # for i in range(200):
