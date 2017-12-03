@@ -23,10 +23,10 @@ print("preparing model")
 
 
 ls1Ip = Input(shape=(30,5))
-ls11 = LSTM(25)(ls1Ip)
-ls11d = Dropout(.3)(ls11)
-ls12 = Dense(10, activation='tanh')(ls11d)
-ls13 = Dense(5, activation='tanh')(ls12)
+ls11 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls1Ip)
+ls12 = Dense(10, activation='tanh')(ls11)
+ls12d = Dropout(.3)(ls12)
+ls13 = Dense(5, activation='tanh')(ls12d)
 
 ls1IpR = Input(shape=(2,))
 ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
@@ -35,10 +35,10 @@ M1 = concatenate([ls13, ls1IpR2])
 
 
 ls2Ip2 = Input(shape=(30,4))
-ls21 = LSTM(25)(ls2Ip2)
-ls21d = Dropout(.3)(ls21)
-ls22 = Dense(20, activation='tanh')(ls21d)
-ls23 = Dense(10, activation='tanh')(ls22)
+ls21 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls2Ip2)
+ls22 = Dense(20, activation='tanh')(ls21)
+ls22d = Dropout(.3)(ls22)
+ls23 = Dense(10, activation='tanh')(ls22d)
 ls24 = Dense(5, activation='tanh')(ls23)
 
 ls2IpR = Input(shape=(2,))
@@ -59,7 +59,7 @@ model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
 sgd = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-model.compile(loss='mean_squared_error',  optimizer=sgd)
+model.compile(loss='binary_crossentropy',  optimizer=sgd)
 print(model.summary())
 
 print("preparing data")
