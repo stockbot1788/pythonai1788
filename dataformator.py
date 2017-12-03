@@ -21,7 +21,7 @@ class DataFormator(object):
         off = 0
         data1 = 0
         for singleDayData in self.m_Data:
-            for i in range(25,len(singleDayData.m_data)-30):
+            for i in range(35,len(singleDayData.m_data)-30):
                 X1,X1r,X2,X2r,Pos = self.packDataForX2(singleDayData,i)
                 #print(X1,X1r,X2,X2r,Pos)
                 Yhat = self.packValueForY(singleDayData,i)
@@ -45,7 +45,7 @@ class DataFormator(object):
         MinMaxCandle = []
         MinMaxPriceDiff = []
         Position = []
-        for i in range(idx-15,idx):
+        for i in range(idx-30,idx):
             crtData = singleDayData.m_data[i]
             pastData = singleDayData.m_data[i-1]
 

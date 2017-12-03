@@ -21,9 +21,9 @@ from os import path
 print("preparing model")
 
 
-ls1Ip = Input(shape=(15,5))
+ls1Ip = Input(shape=(30,5))
 ls11 = LSTM(25)(ls1Ip)
-ls11d = Dropout(.3)(ls11)
+ls11d = Dropout(.4)(ls11)
 ls12 = Dense(10, activation='tanh')(ls11d)
 ls13 = Dense(5, activation='tanh')(ls12)
 
@@ -33,9 +33,9 @@ ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
 M1 = concatenate([ls13, ls1IpR2])
 
 
-ls2Ip2 = Input(shape=(15,4))
+ls2Ip2 = Input(shape=(30,4))
 ls21 = LSTM(25)(ls2Ip2)
-ls21d = Dropout(.3)(ls21)
+ls21d = Dropout(.4)(ls21)
 ls22 = Dense(10, activation='tanh')(ls21d)
 ls23 = Dense(5, activation='tanh')(ls22)
 
@@ -50,7 +50,7 @@ ls31 = Dense(5, activation='tanh')(ls3Ip3)
 merge_one = concatenate([M1, M2, ls31])
 
 output = Dense(10, activation='tanh')(merge_one)
-outputd = Dropout(.3)(output)
+outputd = Dropout(.4)(output)
 output1 = Dense(5, activation='tanh')(outputd)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
@@ -72,22 +72,22 @@ inputX2Str = array(inputX2Str)
 Position = array(Position)
 outputY = array(outputY)
 
-_path = "lstm.h5"
-if _path and path.isfile(_path):
-    try:
-        print("try load weight")
-        model.load_weights(_path)
-        print("load weight success")
-    except Exception as ex:
-        print("error",ex)
-        sys.exit("Error message")
+# _path = "lstm.h5"
+# if _path and path.isfile(_path):
+#     try:
+#         print("try load weight")
+#         model.load_weights(_path)
+#         print("load weight success")
+#     except Exception as ex:
+#         print("error",ex)
+#         sys.exit("Error message")
 
 #print(inputX.shape)
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
-model.save_weights("lstm.h5")
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=800, verbose=1)
+model.save_weights("lstm2.h5")
 
 # for i in range(200):
 #     model.fit(np.array(inputX), outputY, batch_size=5000, epochs=100, verbose=1)
