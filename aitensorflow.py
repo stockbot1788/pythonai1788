@@ -18,6 +18,8 @@ from keras.optimizers import RMSprop
 from keras.layers import Input,Dropout
 from keras import optimizers
 from os import path
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1"
 print("preparing model")
 
 
