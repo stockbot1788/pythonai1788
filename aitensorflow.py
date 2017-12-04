@@ -35,10 +35,9 @@ M1 = concatenate([ls13, ls1IpR2])
 
 ls2Ip2 = Input(shape=(30,4))
 ls21 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls2Ip2)
-ls22 = Dense(20, activation='sigmoid')(ls21)
-ls22d = Dropout(.3)(ls22)
-ls23 = Dense(10, activation='tanh')(ls22d)
-ls24 = Dense(5, activation='tanh')(ls23)
+ls22 = Dense(20, activation='sigmoid',dropout=0.3)(ls21)
+ls23 = Dense(10, activation='tanh',dropout=0.3)(ls22)
+ls24 = Dense(5, activation='tanh',dropout=0.3)(ls23)
 
 ls2IpR = Input(shape=(2,))
 ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
@@ -51,14 +50,13 @@ ls31 = Dense(5, activation='tanh')(ls3Ip3)
 merge_one = concatenate([M1, M2, ls31])
 
 output = Dense(20, activation='tanh')(merge_one)
-outputd = Dropout(.3)(output)
-output1 = Dense(5, activation='tanh')(outputd)
-output2 = Dense(1, activation='sigmoid')(output1)
+output1 = Dense(5, activation='tanh',dropout=0.3)(output)
+output2 = Dense(1, activation='sigmoid',dropout=0.3)(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
-sgd = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-model.compile(loss='binary_crossentropy',  optimizer='adam',metrics=['accuracy'])
+sgd = optimizers.RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
+model.compile(loss='binary_crossentropy',  optimizer=sgd ,metrics=['accuracy'])
 print(model.summary())
 
 print("preparing data")
@@ -87,7 +85,7 @@ outputY = array(outputY)
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=800, verbose=1)
 model.save_weights("lstm2.h5")
 
 # for i in range(200):
