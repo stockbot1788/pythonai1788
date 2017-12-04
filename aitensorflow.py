@@ -22,6 +22,8 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"]="0,1"
 print("preparing model")
 
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
 
 ls1Ip = Input(shape=(30,5))
 ls11 = LSTM(25,dropout=0.5, recurrent_dropout=0.3, activation='sigmoid')(ls1Ip)
