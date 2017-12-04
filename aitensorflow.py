@@ -88,7 +88,7 @@ outputY = array(outputY)
 # for step in range(30):
 #     cost = model.train_on_batch([inputX,inputXStr,inputX2,inputX2Str,Position], outputY) 
 #     print (cost)
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=1000, epochs=800, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=800, verbose=1)
 model.save_weights("lstm2.h5")
 
 # for i in range(200):
