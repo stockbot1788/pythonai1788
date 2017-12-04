@@ -22,8 +22,8 @@ print("preparing model")
 
 
 ls1Ip = Input(shape=(30,5))
-ls11 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls1Ip)
-ls12 = Dense(10, activation='sigmoid')(ls11)
+ls11 = LSTM(25,dropout=0.5, recurrent_dropout=0.3, activation='sigmoid')(ls1Ip)
+ls12 = Dense(10, activation='relu')(ls11)
 ls12d = Dropout(.3)(ls12)
 ls13 = Dense(5, activation='tanh')(ls12d)
 
@@ -34,10 +34,11 @@ M1 = concatenate([ls13, ls1IpR2])
 
 
 ls2Ip2 = Input(shape=(30,4))
-ls21 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls2Ip2)
-ls22 = Dense(20, activation='sigmoid',dropout=0.3)(ls21)
-ls23 = Dense(10, activation='tanh',dropout=0.3)(ls22)
-ls24 = Dense(5, activation='tanh',dropout=0.3)(ls23)
+ls21 = LSTM(25,dropout=0.5, recurrent_dropout=0.3,activation='sigmoid')(ls2Ip2)
+ls22 = Dense(20, activation='relu')(ls21)
+ls22d = Dropout(.3)(ls22)
+ls23 = Dense(10, activation='tanh')(ls22d)
+ls24 = Dense(5, activation='tanh')(ls23)
 
 ls2IpR = Input(shape=(2,))
 ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
@@ -50,8 +51,8 @@ ls31 = Dense(5, activation='tanh')(ls3Ip3)
 merge_one = concatenate([M1, M2, ls31])
 
 output = Dense(20, activation='tanh')(merge_one)
-output1 = Dense(5, activation='tanh',dropout=0.3)(output)
-output2 = Dense(1, activation='sigmoid',dropout=0.3)(output1)
+output1 = Dense(5, activation='tanh')(output)
+output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
 
 #model = Model(inputs=[ls1],outputs=)
