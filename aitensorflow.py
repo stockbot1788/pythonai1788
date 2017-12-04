@@ -1,4 +1,5 @@
 import os
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 import numpy as np
 from env import MarketEnv
 from dataformator import DataFormator
@@ -17,8 +18,7 @@ from keras.optimizers import RMSprop
 from keras.layers import Input,Dropout
 from keras import optimizers
 from os import path
-import os
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+
 print("preparing model")
 
 
