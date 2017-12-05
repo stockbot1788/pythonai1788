@@ -29,9 +29,12 @@ class DataFormator(object):
                 if Yhat == 1:
                     off = off + 1
                 outputY.append(Yhat)
+                X1 = X1.reshape(30,5,1)
                 inputX.append(X1)
-                inputXR.append(X1r)
+                inputXR.append(X1r)     
+                X2 = X2.reshape(30,4,1)           
                 inputX2.append(X2)
+                #print(X2.shape)
                 inputX2R.append(X2r)
                 pos.append(Pos)
 
