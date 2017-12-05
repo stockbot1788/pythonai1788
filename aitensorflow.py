@@ -89,4 +89,4 @@ outputY = array(outputY)
 
 
 model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=600, epochs=800, verbose=1)
-#model.save_weights("lstm2.h5")
+model.save_weights("lstm2.h5")
