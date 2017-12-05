@@ -28,12 +28,12 @@ ls11 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls1Ip)
 ls12 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls11)
 ls13 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls12)
 out = Flatten()(ls13)
-output1 = Dense(10, activation='relu')(out)
+output1 = Dense(10, activation='tanh')(out)
 output2 = Dense(5, activation='sigmoid')(output1)
 
 
 ls1IpR = Input(shape=(2,))
-ls1IpR2 = Dense(5, activation='relu')(ls1IpR)
+ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
 
 M1 = concatenate([output2, ls1IpR2])
 
@@ -43,20 +43,20 @@ ls21 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls2Ip)
 ls22 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls21)
 ls23 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls22)
 out2 = Flatten()(ls23)
-output21 = Dense(10, activation='relu')(out2)
+output21 = Dense(10, activation='tanh')(out2)
 output22 = Dense(5, activation='sigmoid')(output21)
 
 ls2IpR = Input(shape=(2,))
-ls2IpR2 = Dense(5, activation='relu')(ls2IpR)
+ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
 
 M2 = concatenate([output22, ls2IpR2])
 
 ls3Ip3 = Input(shape=(1,))
-ls31 = Dense(5, activation='relu')(ls3Ip3)
+ls31 = Dense(5, activation='tanh')(ls3Ip3)
 
 merge_one = concatenate([M1, M2, ls31])
 
-output = Dense(20, activation='relu')(merge_one)
+output = Dense(20, activation='tanh')(merge_one)
 output1 = Dense(5, activation='tanh')(output)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
