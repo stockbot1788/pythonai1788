@@ -17,49 +17,50 @@ import sys
 from keras.optimizers import RMSprop
 from keras.layers import Input
 from os import path
-from keras.layers import Input,Dropout
+from keras.layers import Input,Dropout,Conv2D,MaxPooling2D,Flatten
 from keras import optimizers
 print("preparing model")
 
+ls1Ip = Input(shape=(30, 5, 1))
+ls11 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls1Ip)
+ls12 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls11)
+ls13 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls12)
+out = Flatten()(ls13)
+output1 = Dense(10, activation='relu')(out)
+output2 = Dense(5, activation='sigmoid')(output1)
 
-ls1Ip = Input(shape=(30,5))
-ls11 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls1Ip)
-ls12 = Dense(10, activation='tanh')(ls11)
-ls12d = Dropout(.3)(ls12)
-ls13 = Dense(5, activation='tanh')(ls12d)
 
 ls1IpR = Input(shape=(2,))
-ls1IpR2 = Dense(5, activation='tanh')(ls1IpR)
+ls1IpR2 = Dense(5, activation='relu')(ls1IpR)
 
-M1 = concatenate([ls13, ls1IpR2])
+M1 = concatenate([output2, ls1IpR2])
 
 
-ls2Ip2 = Input(shape=(30,4))
-ls21 = LSTM(25,dropout=0.5, recurrent_dropout=0.3)(ls2Ip2)
-ls22 = Dense(20, activation='tanh')(ls21)
-ls22d = Dropout(.3)(ls22)
-ls23 = Dense(10, activation='tanh')(ls22d)
-ls24 = Dense(5, activation='tanh')(ls23)
+ls2Ip = Input(shape=(30, 4, 1))
+ls21 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls2Ip)
+ls22 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls21)
+ls23 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls22)
+out2 = Flatten()(ls23)
+output21 = Dense(10, activation='relu')(out2)
+output22 = Dense(5, activation='sigmoid')(output21)
 
 ls2IpR = Input(shape=(2,))
-ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
+ls2IpR2 = Dense(5, activation='relu')(ls2IpR)
 
-M2 = concatenate([ls24, ls2IpR2])
+M2 = concatenate([output22, ls2IpR2])
 
 ls3Ip3 = Input(shape=(1,))
-ls31 = Dense(5, activation='tanh')(ls3Ip3)
+ls31 = Dense(5, activation='relu')(ls3Ip3)
 
 merge_one = concatenate([M1, M2, ls31])
 
-output = Dense(20, activation='tanh')(merge_one)
-outputd = Dropout(.3)(output)
-output1 = Dense(5, activation='tanh')(outputd)
+output = Dense(20, activation='relu')(merge_one)
+output1 = Dense(5, activation='tanh')(output)
 output2 = Dense(1, activation='sigmoid')(output1)
-model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip2,ls2IpR,ls3Ip3], outputs=output2)
+model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
 
-#model = Model(inputs=[ls1],outputs=)
-sgd = optimizers.RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
-model.compile(loss='binary_crossentropy',  optimizer=sgd)
+sgd = optimizers.RMSprop(lr=0.00001, rho=0.9, epsilon=1e-08, decay=0.0)
+model.compile(loss='binary_crossentropy',  optimizer=sgd ,metrics=['accuracy'])
 print(model.summary())
 
 print("preparing data")
