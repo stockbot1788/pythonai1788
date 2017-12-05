@@ -62,7 +62,7 @@ output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
 
 sgd = optimizers.RMSprop(lr=0.00001, rho=0.9, epsilon=1e-08, decay=0.0)
-model.compile(loss='binary_crossentropy',  optimizer=sgd ,metrics=['accuracy'])
+model.compile(loss='binary_crossentropy',  optimizer="adam" ,metrics=['accuracy'])
 print(model.summary())
 
 print("preparing data")
