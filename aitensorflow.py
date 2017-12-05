@@ -88,5 +88,5 @@ if _path and path.isfile(_path):
         sys.exit("Error message")
 
 
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=600, epochs=800, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=600, epochs=2000, verbose=1)
 model.save_weights("lstm2.h5")
