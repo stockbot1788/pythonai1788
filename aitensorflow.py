@@ -61,8 +61,8 @@ output1 = Dense(5, activation='tanh')(output)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
 
-sgd = optimizers.RMSprop(lr=0.00001, rho=0.9, epsilon=1e-08, decay=0.0)
-model.compile(loss='binary_crossentropy',  optimizer=sgd ,metrics=['accuracy'])
+sgd = optimizers.RMSprop(lr=0.1, rho=0.9, epsilon=1e-08, decay=0.0)
+model.compile(loss='binary_crossentropy',  optimizer="adam" ,metrics=['accuracy'])
 print(model.summary())
 
 print("preparing data")
@@ -77,16 +77,16 @@ inputX2Str = array(inputX2Str)
 Position = array(Position)
 outputY = array(outputY)
 
-_path = "lstm.h5"
-if _path and path.isfile(_path):
-    try:
-        print("try load weight")
-        model.load_weights(_path)
-        print("load weight success")
-    except Exception as ex:
-        print("error",ex)
-        sys.exit("Error message")
+# _path = "lstm.h5"
+# if _path and path.isfile(_path):
+#     try:
+#         print("try load weight")
+#         model.load_weights(_path)
+#         print("load weight success")
+#     except Exception as ex:
+#         print("error",ex)
+#         sys.exit("Error message")
 
 
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=600, epochs=2000, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
 model.save_weights("lstm2.h5")
