@@ -81,16 +81,16 @@ inputX2Str = array(inputX2Str)
 Position = array(Position)
 outputY = array(outputY)
 
-_path = "lstm.h5"
-if _path and path.isfile(_path):
-    try:
-        print("try load weight")
-        model.load_weights(_path)
-        print("load weight success")
-    except Exception as ex:
-        print("error",ex)
-        sys.exit("Error message")
+# _path = "lstm3.h5"
+# if _path and path.isfile(_path):
+#     try:
+#         print("try load weight")
+#         model.load_weights(_path)
+#         print("load weight success")
+#     except Exception as ex:
+#         print("error",ex)
+#         sys.exit("Error message")
 
 
 model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
-model.save_weights("lstm2.h5")
+model.save_weights("lstm3.h5")
