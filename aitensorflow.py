@@ -65,7 +65,7 @@ output1 = Dense(5, activation='tanh')(x_drop3)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
 
-sgd = optimizers.RMSprop(lr=0.00001, rho=0.9, epsilon=1e-08, decay=0.0)
+sgd = optimizers.RMSprop(lr=0.1, rho=0.9, epsilon=1e-08, decay=0.0)
 model.compile(loss='binary_crossentropy',  optimizer=sgd ,metrics=['accuracy'])
 print(model.summary())
 
