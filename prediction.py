@@ -21,9 +21,11 @@ from keras.layers import Input,Dropout,Conv2D,MaxPooling2D,Flatten
 from keras import optimizers
 print("preparing model")
 
+
 ls1Ip = Input(shape=(30, 5, 1))
 ls11 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls1Ip)
-ls12 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls11)
+x_drop4 = Dropout(0.5)(ls11)
+ls12 = Conv2D(64, (2, 2), padding='same', activation='relu')(x_drop4)
 ls13 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls12)
 out = Flatten()(ls13)
 output1 = Dense(10, activation='tanh')(out)
@@ -38,11 +40,13 @@ M1 = concatenate([output2, ls1IpR2])
 
 ls2Ip = Input(shape=(30, 4, 1))
 ls21 = Conv2D(64, (1, 1), padding='same', activation='relu')(ls2Ip)
-ls22 = Conv2D(64, (2, 2), padding='same', activation='relu')(ls21)
+x_drop = Dropout(0.5)(ls21)
+ls22 = Conv2D(64, (2, 2), padding='same', activation='relu')(x_drop)
 ls23 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(ls22)
 out2 = Flatten()(ls23)
 output21 = Dense(10, activation='tanh')(out2)
-output22 = Dense(5, activation='sigmoid')(output21)
+x_drop2 = Dropout(0.5)(output21)
+output22 = Dense(5, activation='sigmoid')(x_drop2)
 
 ls2IpR = Input(shape=(2,))
 ls2IpR2 = Dense(5, activation='tanh')(ls2IpR)
@@ -55,7 +59,8 @@ ls31 = Dense(5, activation='tanh')(ls3Ip3)
 merge_one = concatenate([M1, M2, ls31])
 
 output = Dense(20, activation='tanh')(merge_one)
-output1 = Dense(5, activation='tanh')(output)
+x_drop3 = Dropout(0.5)(output)
+output1 = Dense(5, activation='tanh')(x_drop3)
 output2 = Dense(1, activation='sigmoid')(output1)
 model = Model(inputs=[ls1Ip,ls1IpR,ls2Ip,ls2IpR,ls3Ip3], outputs=output2)
 
@@ -76,7 +81,7 @@ Position = array(Position)
 outputY = array(outputY)
 
 
-_path = "lstm2.h5"
+_path = "lstm3.h5"
 if _path and path.isfile(_path):
     try:
         print("try load weight")
