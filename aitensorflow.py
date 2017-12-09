@@ -92,5 +92,5 @@ outputY = array(outputY)
 #         sys.exit("Error message")
 
 
-model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=300, epochs=2000, verbose=1)
+model.fit([inputX,inputXStr,inputX2,inputX2Str,Position], outputY, batch_size=600, epochs=2000, verbose=1)
 model.save_weights("lstm3.h5")
